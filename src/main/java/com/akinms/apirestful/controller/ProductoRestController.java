@@ -5,12 +5,10 @@ import com.akinms.apirestful.entity.Producto;
 import com.akinms.apirestful.entity.ProductoModelAssembler;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
-import org.hibernate.usertype.BaseUserTypeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ProductoRestController {
     @Autowired
     private IProductoBusiness productoBusiness;
-    private ProductoModelAssembler assemblerProducto;
+    private final ProductoModelAssembler assemblerProducto;
 
     ProductoRestController(IProductoBusiness productoBusiness,ProductoModelAssembler assemblerProducto){
         this.productoBusiness = productoBusiness;
