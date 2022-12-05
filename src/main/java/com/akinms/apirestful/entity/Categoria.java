@@ -1,5 +1,6 @@
 package com.akinms.apirestful.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -17,7 +18,9 @@ public class Categoria implements Serializable {
     private Long idcategoria;
 
     @OneToMany(mappedBy = "categoria", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    public Set<Producto> productos = new HashSet<>();
+    //@OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Producto> productos;
 
     public Categoria(String nombre, String img_url, Long idcategoria) {
         this.nombre = nombre;
@@ -51,7 +54,7 @@ public class Categoria implements Serializable {
     public void setIdcategoria(Long idcategoria) {
         this.idcategoria = idcategoria;
     }
-    @JsonManagedReference
+    @JsonManagedReference(value = "productoscate")
     public Set<Producto> getProductos() {
         return productos;
     }

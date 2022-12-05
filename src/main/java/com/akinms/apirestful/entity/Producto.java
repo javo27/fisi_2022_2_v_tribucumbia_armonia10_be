@@ -1,9 +1,12 @@
 package com.akinms.apirestful.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "producto")
@@ -14,9 +17,15 @@ public class Producto implements Serializable {
     private Double descuento;
     private int stock;
     private String img;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idcategoria", nullable = false)
-    public Categoria categoria;
+    public Categoria categoria = new Categoria();
+
+    /*@OneToMany
+    @JoinColumn(name = "idproducto")
+    private Set<DetallePedido> detallePedido;*/
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idproducto;
@@ -88,7 +97,8 @@ public class Producto implements Serializable {
         this.idproducto = id;
     }
 
-    @JsonBackReference
+    @JsonBackReference(value = "productoscate")
+    //@JsonManagedReference(value = "productoscate")
     public Categoria getCategoria() {
         return categoria;
     }
@@ -96,4 +106,21 @@ public class Producto implements Serializable {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
+
+    //@JsonBackReference
+   /* @JsonManagedReference
+    public Set<DetallePedido> getDetallePedido(){
+        return this.detallePedido;
+    }
+    public void setDetallePedido(Set<DetallePedido> detallePedido){
+        this.detallePedido = detallePedido;
+    }*/
+    @Override
+    public String toString(){
+        return String.format("" +
+                "producto [idproducto=%d, nombre=%s, descripcion=%s, precio=%f, descuento=%f, stock=%d]",
+                this.idproducto,this.nombre,this.categoria,this.precio,this.descuento,this.stock
+        );
+    }
+
 }

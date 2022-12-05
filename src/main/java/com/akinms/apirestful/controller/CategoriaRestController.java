@@ -42,7 +42,7 @@ public class CategoriaRestController {
                     .map(assemblerCategoria::toModel)
                     .collect(Collectors.toList());
             CollectionModel<EntityModel<Categoria>> collection = CollectionModel.of(categorias,
-                    linkTo(methodOn(ProductoRestController.class).listAll()).withSelfRel());
+                    linkTo(methodOn(CategoriaRestController.class).listAll()).withSelfRel());
             return new ResponseEntity<>(collection, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

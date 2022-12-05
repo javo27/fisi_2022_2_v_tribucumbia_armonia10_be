@@ -1,8 +1,10 @@
 package com.akinms.apirestful.business;
 
+import com.akinms.apirestful.entity.Categoria;
 import com.akinms.apirestful.entity.Producto;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
+import com.akinms.apirestful.respository.CategoriaRepository;
 import com.akinms.apirestful.respository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.Optional;
 public class ProductoBusiness implements IProductoBusiness{
     @Autowired
     private ProductoRepository productoRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
     @Override
     public List<Producto> listAllProducts() throws BusinessException {
         try{
@@ -48,7 +52,15 @@ public class ProductoBusiness implements IProductoBusiness{
     @Override
     public Producto saveProduct(Producto producto) throws BusinessException{
         try{
-            return productoRepository.save(producto);
+            Optional<Categoria> cat;
+            if(producto.categoria!=null){
+                cat = categoriaRepository.findById(producto.getCategoria().getIdcategoria());
+                producto.setCategoria(cat.get());
+                return productoRepository.save(producto);
+            }else{
+                return productoRepository.save(producto);
+            }
+
         } catch (Exception e){
             throw new BusinessException(e.getMessage());
         }
@@ -67,11 +79,22 @@ public class ProductoBusiness implements IProductoBusiness{
         }
         else{
             try {
+                Optional<Categoria> cat;
+                if(producto.categoria!=null) {
+                    cat = categoriaRepository.findById(producto.getCategoria().getIdcategoria());
+                    producto.setCategoria(cat.get());
+                }
+                    //return productoRepository.save(producto);
                 op.map(productoUpdate -> {
                     productoUpdate.setDescripcion(producto.getDescripcion());
                     productoUpdate.setImg(producto.getImg());
                     productoUpdate.setNombre(producto.getNombre());
                     productoUpdate.setPrecio(producto.getPrecio());
+                    productoUpdate.setDescuento(producto.getDescuento());
+                    productoUpdate.setStock(producto.getStock());
+                    if(producto.categoria!=null){
+                        productoUpdate.setCategoria(producto.getCategoria());
+                    }
                     return productoRepository.save(productoUpdate);
                 });
             }
