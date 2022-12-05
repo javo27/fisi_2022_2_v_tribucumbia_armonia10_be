@@ -23,6 +23,11 @@ public class Producto implements Serializable {
     @JoinColumn(name = "idcategoria", nullable = false)
     public Categoria categoria = new Categoria();
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idbodega", nullable = false)
+    public Bodega bodega;
+
     /*@OneToMany
     @JoinColumn(name = "idproducto")
     private Set<DetallePedido> detallePedido;*/
@@ -115,6 +120,14 @@ public class Producto implements Serializable {
     public void setDetallePedido(Set<DetallePedido> detallePedido){
         this.detallePedido = detallePedido;
     }*/
+    @JsonBackReference(value = "bodega2")
+    public Bodega getBodega() {
+        return bodega;
+    }
+
+    public void setBodega(Bodega bodega) {
+        this.bodega = bodega;
+    }
     @Override
     public String toString(){
         return String.format("" +

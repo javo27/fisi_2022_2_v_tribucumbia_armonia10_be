@@ -1,9 +1,11 @@
 package com.akinms.apirestful.business;
 
+import com.akinms.apirestful.entity.Bodega;
 import com.akinms.apirestful.entity.Categoria;
 import com.akinms.apirestful.entity.Producto;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
+import com.akinms.apirestful.respository.BodegaRepository;
 import com.akinms.apirestful.respository.CategoriaRepository;
 import com.akinms.apirestful.respository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ public class ProductoBusiness implements IProductoBusiness{
     private ProductoRepository productoRepository;
     @Autowired
     private CategoriaRepository categoriaRepository;
+    @Autowired
+    private BodegaRepository bodegaRepository;
     @Override
     public List<Producto> listAllProducts() throws BusinessException {
         try{
@@ -53,13 +57,23 @@ public class ProductoBusiness implements IProductoBusiness{
     public Producto saveProduct(Producto producto) throws BusinessException{
         try{
             Optional<Categoria> cat;
+            Optional<Bodega> bod;
             if(producto.categoria!=null){
                 cat = categoriaRepository.findById(producto.getCategoria().getIdcategoria());
+                if(!cat.isPresent()){
+                    throw new NotFoundException("La categoria a la que se quiere registrar un producto no existe");
+                }
                 producto.setCategoria(cat.get());
-                return productoRepository.save(producto);
-            }else{
-                return productoRepository.save(producto);
+                //return productoRepository.save(producto);
             }
+            if(producto.getBodega()!=null){
+                bod = bodegaRepository.findById(producto.getBodega().getIdbodega());
+                if(!bod.isPresent()){
+                    throw new NotFoundException("La bodega a la que se quiere registrar un producto no existe");
+                }
+                producto.setBodega(bod.get());
+            }
+            return productoRepository.save(producto);
 
         } catch (Exception e){
             throw new BusinessException(e.getMessage());
