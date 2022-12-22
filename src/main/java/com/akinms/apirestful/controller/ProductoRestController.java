@@ -2,13 +2,12 @@ package com.akinms.apirestful.controller;
 
 import com.akinms.apirestful.business.IProductoBusiness;
 import com.akinms.apirestful.entity.Producto;
-import com.akinms.apirestful.entity.ProductoModelAssembler;
+import com.akinms.apirestful.responseentity.RespuestaProductos;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,32 +19,30 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/v1/productos")
+@RequestMapping("/api/atencioncliente/v1/productos")
 public class ProductoRestController {
     @Autowired
     private IProductoBusiness productoBusiness;
-    private final ProductoModelAssembler assemblerProducto;
 
-    ProductoRestController(IProductoBusiness productoBusiness,ProductoModelAssembler assemblerProducto){
-        this.productoBusiness = productoBusiness;
-        this.assemblerProducto = assemblerProducto;
-    }
 
+    /*
     @GetMapping("/")
-    public ResponseEntity<CollectionModel<EntityModel<Producto>>> listAll() {
+    public ResponseEntity<RespuestaProductos> listAll() {
     //public ResponseEntity<List<Producto>> listAll() {
+        RespuestaProductos respuesta = new RespuestaProductos();
         try{
-            List<EntityModel<Producto>> productos = productoBusiness.listAllProducts().stream()
-                    .map(assemblerProducto::toModel)
-                    .collect(Collectors.toList());
-            CollectionModel<EntityModel<Producto>> collection = CollectionModel.of(productos,
-                    linkTo(methodOn(ProductoRestController.class).listAll()).withSelfRel());
-            return new ResponseEntity<>(collection, HttpStatus.OK);
+            List<?> productos = productoBusiness.listAllProducts();
+            if (productos.size()>0)
+                respuesta.setMensaje("Se encontraron "+productos.size()+" productos");
+            else
+                respuesta.setMensaje("No se encontraron coincidencias");
+            respuesta.setProductos(productos);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/search")
+    @GetMapping("/search2")
     public ResponseEntity<CollectionModel<EntityModel<Producto>>> listAllByName(@RequestParam String nombre) {
         try{
             List<EntityModel<Producto>> productos = productoBusiness.listAllProductsByName(nombre).stream()
@@ -57,7 +54,71 @@ public class ProductoRestController {
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }*/
+    @GetMapping("/listarproductos/bodega/{id}")
+    public ResponseEntity<RespuestaProductos> listarProductosBodega(@PathVariable Long id) {
+        try{
+            List<?> productos = productoBusiness.listProductsBodega(id);
+            RespuestaProductos respuesta = new RespuestaProductos("Productos por Bodega",productos);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+    @GetMapping("/search")
+    public ResponseEntity<RespuestaProductos> listarProductosNombre(@RequestParam String nombre) {
+        RespuestaProductos respuesta = new RespuestaProductos();
+        try{
+            List<?> productos = productoBusiness.listaProductsNombre(nombre);
+            if (productos.size()>0)
+                respuesta.setMensaje("Se encontraron "+productos.size()+" productos");
+            else
+                respuesta.setMensaje("No se encontraron coincidencias");
+            respuesta.setProductos(productos);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @GetMapping("/bodega/{id}/search")
+    public ResponseEntity<RespuestaProductos> listarProductosNombreBodega(@PathVariable Long id, @RequestParam String nombre) {
+        RespuestaProductos respuesta = new RespuestaProductos();
+        try{
+            List<?> productos = productoBusiness.listProductsNombreBodega(nombre,id);
+            if (productos.size()>0)
+                respuesta.setMensaje("Se encontraron "+productos.size()+" productos");
+            else
+                respuesta.setMensaje("No se encontraron coincidencias");
+            respuesta.setProductos(productos);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/bodega/{id2}/categoria/{id1}")
+    public ResponseEntity<RespuestaProductos> listarProductosCategoria(@PathVariable Long id1, @PathVariable Long id2) {
+        RespuestaProductos respuesta = new RespuestaProductos();
+        try{
+            List<Producto> productos = productoBusiness.listProductsCategory(id1,id2);
+            if (productos.size()>0)
+                respuesta.setMensaje("Se encontraron "+productos.size()+" productos de la categoria " + productos.get(0).categoria.getNombre());
+            else
+                respuesta.setMensaje("La categoria no presenta productos registrados");
+            respuesta.setProductos(productos);
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+/*
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Producto>> showProduct(@PathVariable Long id){
     //public ResponseEntity<Producto> showProduct(@PathVariable Long id){
@@ -106,5 +167,5 @@ public class ProductoRestController {
         } catch (NotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 }

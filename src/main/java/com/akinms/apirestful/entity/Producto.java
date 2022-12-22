@@ -8,7 +8,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
+
 @Entity
+/*@NamedStoredProcedureQuery(name = "Producto.getProductosBodega",
+        procedureName = "productosBodega", parameters = {
+        @StoredProcedureParameter(mode = ParameterMode.IN, name = "id_bodega", type = Long.class)})*/
 @Table(name = "producto")
 public class Producto implements Serializable {
     private String nombre;
@@ -27,6 +31,7 @@ public class Producto implements Serializable {
     //@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idbodega", nullable = false)
     public Bodega bodega;
+
 
     /*@OneToMany
     @JoinColumn(name = "idproducto")

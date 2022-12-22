@@ -1,9 +1,11 @@
 package com.akinms.apirestful.business;
 
+import com.akinms.apirestful.entity.Bodega;
 import com.akinms.apirestful.entity.Categoria;
 import com.akinms.apirestful.entity.Producto;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
+import com.akinms.apirestful.respository.BodegaRepository;
 import com.akinms.apirestful.respository.CategoriaRepository;
 import com.akinms.apirestful.respository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,28 @@ import java.util.Optional;
 public class CategoriaBusiness implements ICategoriaBusiness{
     @Autowired
     private CategoriaRepository categoriaRepository;
+    @Autowired
+    private BodegaRepository bodegaRepository;
     @Override
+    public List<Categoria> listarCategoriasBodega(Long id) throws BusinessException, NotFoundException {
+        Optional<Bodega> bo;
+        try{
+            bo = bodegaRepository.findById(id);
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+        if(!bo.isPresent()){
+            throw new NotFoundException("No se encontro la bodega con el id "+id);
+        }
+        else{
+            try{
+                return categoriaRepository.getCategoriasBodegas(id);
+            } catch (Exception e){
+                throw new BusinessException(e.getMessage());
+            }
+        }
+    }
+    /*@Override
     public List<Categoria> listAllCategories() throws BusinessException {
         try{
             return categoriaRepository.findAll();
@@ -95,5 +118,5 @@ public class CategoriaBusiness implements ICategoriaBusiness{
                 throw new BusinessException(e.getMessage());
             }
         }
-    }
+    }*/
 }
