@@ -1,10 +1,12 @@
 package com.akinms.apirestful.controller;
 
 import com.akinms.apirestful.business.IPedidoBusiness;
+import com.akinms.apirestful.entity.DetallePedido;
+import com.akinms.apirestful.entity.Fechas;
 import com.akinms.apirestful.entity.Pedido;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
-import com.akinms.apirestful.responseentity.RespuestaPedido;
+import com.akinms.apirestful.responseentity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -13,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,12 +36,84 @@ public class PedidoRestController {
         RespuestaPedido respuestaPedido = new RespuestaPedido();
         try{
             List<Pedido> pedidosCliente = pedidoBusiness.getPedidosCliente(id);
-            if(pedidosCliente.size()>0)
-                respuestaPedido.setMensaje("Cantidad de pedidos: "+pedidosCliente.size());
+            List<Pedidos> pedidosClienteResponse = new ArrayList<>();
+            //List<DetallePedidos> detallesResponse = new ArrayList<>();
+            for(Pedido p : pedidosCliente){
+                Pedidos ped = new Pedidos();
+                List<DetallePedidos> detallesResponse = new ArrayList<>();
+                ped.setIdpedido(p.getIdpedido());
+                for(DetallePedido dt : p.getDetallesPedido()){
+                    System.out.println("CANTIDAD DE PRODUCTOS DETALLE: "+p.getDetallesPedido().size());
+                    DetallePedidos det = new DetallePedidos();
+                    det.setPedido("00");
+                    det.setCantidad(dt.getCantidad());
+                    det.setProducto(dt.getProducto());
+                    detallesResponse.add(det);
+                }
+                ped.setDetallesPedido(detallesResponse);
+                ped.setEstado(p.getEstado());
+                ped.setFecha(p.getFecha().toString().substring(0,10));
+                ped.setMetodo_pago(p.getMetodo_pago());
+                ped.setMonto_total(p.getMonto_total());
+                ped.setTipo_entrega(p.getTipo_entrega());
+                BodegaUbicacion bu = new BodegaUbicacion();
+                bu.setNombre(p.getBodega().getNombre());
+                bu.setIdbodega(p.getBodega().getIdbodega());
+                bu.setLongitud(p.getBodega().getUbicacion().getLongitud());
+                bu.setLatitud(p.getBodega().getUbicacion().getLatitud());
+                bu.setDireccion(p.getBodega().getUbicacion().getNombre());
+                ped.setBodega(bu);
+                pedidosClienteResponse.add(ped);
+            }
+            if(pedidosClienteResponse.size()>0)
+                respuestaPedido.setMensaje("Cantidad de pedidos: "+pedidosClienteResponse.size());
             else
                 respuestaPedido.setMensaje("No Tiene pedidos registrados");
-            respuestaPedido.setPedidos(pedidosCliente);
+            respuestaPedido.setPedidos(pedidosClienteResponse);
             return new ResponseEntity<>(respuestaPedido,HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @GetMapping("/consultar/bodega/{id}")
+    public ResponseEntity<RespuestaPedido> listPedidosBodega(@PathVariable Long id){
+        RespuestaPedido respuestaPedido = new RespuestaPedido();
+        try{
+            List<Pedido> pedidosBodega = pedidoBusiness.getPedidosBodega(id);
+            if(pedidosBodega.size()>0)
+                respuestaPedido.setMensaje("Cantidad de pedidos: "+pedidosBodega.size());
+            else
+                respuestaPedido.setMensaje("No Tiene pedidos registrados");
+            respuestaPedido.setPedidos(pedidosBodega);
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/consultar/ventas/bodega/{id}/fechas")
+    public ResponseEntity<RespuestaVentas> getVentasSemanales(@PathVariable Long id, @RequestParam String fecha_inicio, @RequestParam String fecha_fin){
+        RespuestaVentas respuestaVentas = new RespuestaVentas();
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            //Ventas ventasSemanales = pedidoBusiness.getVentasSemanes(sdf.parse(fecha_inicio),sdf.parse(fecha_fin),id);
+            List<Pedido> ventasSemanales = pedidoBusiness.getVentasSemanes(fecha_inicio,fecha_fin,id);
+            List<Ventas> ventas = new ArrayList<>();
+            for(Pedido p : ventasSemanales){
+                Ventas v = new Ventas();
+                v.setMonto(p.getMonto_total());
+                String feccha = p.getFecha().toString();
+                v.setFecha(feccha.substring(0,10));
+                ventas.add(v);
+            }
+            respuestaVentas.setMensaje("Ventas semanales en el rango: ["+fecha_inicio+" - "+fecha_fin+"]");
+            respuestaVentas.setVentas(ventas);
+            return new ResponseEntity<>(respuestaVentas,HttpStatus.OK);
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NotFoundException e){

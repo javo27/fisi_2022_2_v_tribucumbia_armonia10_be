@@ -23,8 +23,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     @Query(value = "{call mostrarProductosCategoria(:id_Categoria,:id_Bodega)};", nativeQuery = true)
     List<Producto> getProductosCateoria(@Param("id_Categoria") Long id_Categoria,@Param("id_Bodega") Long id_Bodega);
 
-    /*@Query(value = "{call actualizarProducto(:id_producto, :p_nomre,:p_stock,:p_precio)}", nativeQuery = true)
-    Producto updateProducto(@Param("id_producto") Long id_producto, @Param("p_nombre") String p_nombre, @Param("p_precio") double p_precio);
-    */
+    @Query(value = "{call actualizarProducto(:id_producto, :p_nombre,:p_stock,:p_precio)}", nativeQuery = true)
+    Producto updateProducto(@Param("id_producto") Long id_producto, @Param("p_nombre") String p_nombre,@Param("p_stock") int p_stock, @Param("p_precio") double p_precio);
 }
 

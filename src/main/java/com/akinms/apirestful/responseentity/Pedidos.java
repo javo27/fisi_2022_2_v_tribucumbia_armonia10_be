@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class Pedidos {
-    private Date fecha;
+    private String fecha;
     private double monto_total;
     private String estado;
     private String tipo_entrega;
@@ -17,12 +18,12 @@ public class Pedidos {
 
     private Long idpedido;
 
-    private Set<DetallePedidos> detallesPedido;
+    private List<DetallePedidos> detallesPedido;
 
     public Pedidos() {
     }
 
-    public Pedidos(Date fecha, double monto_total, String estado, String tipo_entrega, String metodo_pago, Long idpedido) {
+    public Pedidos(String fecha, double monto_total, String estado, String tipo_entrega, String metodo_pago, Long idpedido) {
         this.fecha = fecha;
         this.monto_total = monto_total;
         this.estado = estado;
@@ -31,13 +32,12 @@ public class Pedidos {
         this.idpedido = idpedido;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
     public void setFecha(String fecha) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        this.fecha = sdf.parse(fecha);
+        this.fecha = fecha;
     }
 
     public double getMonto_total() {
@@ -88,13 +88,10 @@ public class Pedidos {
         this.idpedido = idpedido;
     }
 
-    public Set<DetallePedidos> getDetallesPedido() {
+    public List<DetallePedidos> getDetallesPedido() {
         return detallesPedido;
     }
-    public void setDetallesPedido(Set<DetallePedidos> detallesPedido) {
+    public void setDetallesPedido(List<DetallePedidos> detallesPedido) {
         this.detallesPedido = detallesPedido;
-        for(DetallePedidos dt: detallesPedido){
-            dt.setPedido(this);
-        }
     }
 }

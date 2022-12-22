@@ -39,19 +39,7 @@ public class ProductoBusiness implements IProductoBusiness{
         }
     }
 
-    @Override
-    public Producto showProduct(Long id) throws BusinessException, NotFoundException {
-        Optional<Producto> op;
-        try{
-            op = productoRepository.findById(id);
-        } catch (Exception e){
-            throw new BusinessException(e.getMessage());
-        }
-        if(!op.isPresent()){
-            throw new NotFoundException("No se encontro el producto con el id "+id);
-        }
-        return op.get();
-    }
+
 
     @Override
     public Producto saveProduct(Producto producto) throws BusinessException{
@@ -119,7 +107,20 @@ public class ProductoBusiness implements IProductoBusiness{
         producto.setIdproducto(id);
         return productoRepository.save(producto);
     }
-
+*/
+    @Override
+    public Producto showProduct(Long id) throws BusinessException, NotFoundException {
+        Optional<Producto> op;
+        try{
+            op = productoRepository.findById(id);
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+        if(!op.isPresent()){
+            throw new NotFoundException("No se encontro el producto con el id "+id);
+        }
+        return op.get();
+    }
     @Override
     public void removeProduct(Long id) throws BusinessException, NotFoundException{
         Optional<Producto> op;
@@ -139,7 +140,7 @@ public class ProductoBusiness implements IProductoBusiness{
                 throw new BusinessException(e.getMessage());
             }
         }
-    } */
+    }
 
     @Override
     public List<Producto> listProductsBodega(Long id) throws BusinessException, NotFoundException {
@@ -221,8 +222,22 @@ public class ProductoBusiness implements IProductoBusiness{
         }
     }
 
-    /*@Override
-    public Producto actualizarProducto(Long id, String nombre, double precio) throws BusinessException, NotFoundException {
-        return null;
-    }*/
+    @Override
+    public Producto actualizarProducto(Long id, String nombre, int stock, double precio) throws BusinessException, NotFoundException {
+        Optional<Producto> op;
+        try{
+            op = productoRepository.findById(id);
+        } catch (Exception e){
+            throw new NotFoundException("No se encontro el producto con el id "+id);
+        }
+        if(!op.isPresent()){
+            throw new NotFoundException("No se encontro el producto con el id "+id);
+        } else{
+            try{
+                return productoRepository.updateProducto(id,nombre,stock,precio);
+            } catch(Exception e){
+                throw new BusinessException(e.getMessage());
+            }
+        }
+    }
 }

@@ -4,21 +4,21 @@ import com.akinms.apirestful.entity.Producto;
 
 public class DetallePedidos {
     private int cantidad;
-    private Pedidos pedido;
+    private String pedido;
     private Producto producto;
 
     public DetallePedidos(){}
 
-    public DetallePedidos(int cantidad, Pedidos pedido, Producto producto) {
+    public DetallePedidos(int cantidad, String pedido, Producto producto) {
         this.cantidad = cantidad;
         this.pedido = pedido;
         this.producto = producto;
     }
 
-    public Pedidos getPedido() {
+    public String getPedido() {
         return pedido;
     }
-    public void setPedido(Pedidos pedido) {
+    public void setPedido(String pedido) {
         this.pedido = pedido;
     }
 

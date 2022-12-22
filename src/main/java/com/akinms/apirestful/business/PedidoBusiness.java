@@ -3,13 +3,12 @@ package com.akinms.apirestful.business;
 import com.akinms.apirestful.entity.*;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
-import com.akinms.apirestful.respository.BodegaRepository;
-import com.akinms.apirestful.respository.ClienteRepository;
-import com.akinms.apirestful.respository.PedidoRepository;
-import com.akinms.apirestful.respository.ProductoRepository;
+import com.akinms.apirestful.responseentity.Ventas;
+import com.akinms.apirestful.respository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +40,46 @@ public class PedidoBusiness implements IPedidoBusiness{
             try{
                 return pedidoRepository.getPedidosCliente(id);
             }catch (Exception e){
+                throw new BusinessException(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public List<Pedido> getPedidosBodega(Long id) throws BusinessException, NotFoundException {
+        Optional<Bodega> bo;
+        try{
+            bo = bodegaRepository.findById(id);
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+        if(!bo.isPresent()){
+            throw new NotFoundException("No se encontro la bodega con el id "+id);
+        }else{
+            try{
+                return pedidoRepository.getPedidosBodega(id);
+            }catch (Exception e){
+                throw new BusinessException(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public List<Pedido> getVentasSemanes(String fecha_inicio, String fecha_fin, Long idBodega) throws BusinessException, NotFoundException {
+        Optional<Bodega> bo;
+        try{
+            bo = bodegaRepository.findById(idBodega);
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+        if(!bo.isPresent()){
+            throw new NotFoundException("No se encontro la bodega con el id "+idBodega);
+        }else{
+            try{
+                System.out.println("CONSULTANDOOOOOOOOOOOOOOOOOOOOOO: "+fecha_inicio);
+                return pedidoRepository.getVentasSemanales(fecha_inicio,fecha_fin,idBodega);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
                 throw new BusinessException(e.getMessage());
             }
         }
