@@ -84,6 +84,44 @@ public class PedidoBusiness implements IPedidoBusiness{
             }
         }
     }
+    @Override
+    public Pedido save(Pedido pedido) throws BusinessException, NotFoundException {
+        Optional<Cliente> cli;
+        Optional<Producto> op;
+        Optional<Bodega> bd;
+        try{
+            cli = clienteRepository.findById(pedido.getCliente().getIdcliente());
+            bd = bodegaRepository.findById(pedido.getBodega().getIdbodega());
+        } catch (Exception e){
+            System.out.println("Cliente no encontrado");
+            throw new BusinessException(e.getMessage());
+        }
+        if(!cli.isPresent() && !bd.isPresent()){
+            throw new NotFoundException("No se encontro el cliente o la bodega");
+        }
+        else{
+            for (DetallePedido dt : pedido.getDetallesPedido()){
+                op = productoRepository.findById(dt.getProducto().getIdProducto());
+                if (!op.isPresent()){
+                    throw new NotFoundException("No se encontro el producto con el id "+dt.getProducto().getIdProducto());
+                } else{
+                    if(dt.getCantidad()>op.get().getStock()){
+                        throw new BusinessException("No suficiente stock para el producto con id "+op.get().getIdProducto());
+                    }
+                    else{
+                        Producto pupdate = op.get();
+                        pupdate.setStock(op.get().getStock()-dt.getCantidad());
+                        //productoBusiness.updateProducto(dt.getProducto().getIdProducto(), pupdate);
+                    }
+                    dt.setPedido(pedido);
+                    dt.setProducto(op.get());
+                }
+            }
+            pedido.setCliente(cli.get());
+            pedido.setBodega(bd.get());
+            return pedidoRepository.save(pedido);
+        }
+    }
     /*@Override
     public List<Pedido> listAll() throws BusinessException {
         try{

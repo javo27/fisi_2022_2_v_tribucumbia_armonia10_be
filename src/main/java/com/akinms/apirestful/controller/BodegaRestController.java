@@ -39,7 +39,7 @@ public class BodegaRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }*/
-    @GetMapping("/")
+    @GetMapping("/listarbodegas/")
     public ResponseEntity<RespuestaBodegas> listAll() {
         RespuestaBodegas rp = new RespuestaBodegas();
         try{
@@ -65,7 +65,7 @@ public class BodegaRestController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/detalles/{id}")
     public ResponseEntity<RespuestaBodegas> show(@PathVariable Long id){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaBodegas rp = new RespuestaBodegas();

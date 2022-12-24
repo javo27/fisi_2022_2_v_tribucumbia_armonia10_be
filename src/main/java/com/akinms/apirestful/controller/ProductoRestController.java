@@ -56,10 +56,11 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }*/
-    @GetMapping("/{id}")
+    @GetMapping("/detalles/{id}")
     public ResponseEntity<RespuestaProductos> showProduct(@PathVariable Long id){
         //public ResponseEntity<Producto> showProduct(@PathVariable Long id){
         RespuestaProductos respuesta = new RespuestaProductos();
+        respuesta.setMensaje("Producto con id: "+id+" no se encuentra registrado");
         try{
             Producto producto = productoBusiness.showProduct(id);
             respuesta.setMensaje("Producto con id: "+id);
@@ -69,7 +70,7 @@ public class ProductoRestController {
         } catch (BusinessException e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(respuesta,HttpStatus.NOT_FOUND);
         }
     }
     @GetMapping("/listarproductos/bodega/{id}")
@@ -150,7 +151,7 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<RespuestaMensaje> deleteProduct(@PathVariable Long id){
         try{
             productoBusiness.removeProduct(id);

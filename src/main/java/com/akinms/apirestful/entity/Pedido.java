@@ -29,7 +29,7 @@ public class Pedido implements Serializable {
     @JoinColumn(name = "idbodega", nullable = false)
     public Bodega bodega;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idpedido;
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DetallePedido> detallesPedido;

@@ -120,7 +120,22 @@ public class PedidoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
+    @PostMapping("/registrar")
+    public ResponseEntity<?> save(@RequestBody Pedido pedido){
+        try{
+            System.out.println(pedido.getFecha());
+            Pedido pedidoSave = pedidoBusiness.save(pedido);
+            return new ResponseEntity<>(pedidoSave,HttpStatus.CREATED);
+            /*EntityModel<Pedido> entityModel = assemblerPedido.toModel(pedidoBusiness.save(pedido));
+            return ResponseEntity
+                    .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                    .body(entityModel);*/
+        }catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (NotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
     /*
     @GetMapping("/")
     public ResponseEntity<CollectionModel<EntityModel<Pedido>>> listAll() {
