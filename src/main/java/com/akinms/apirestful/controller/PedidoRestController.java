@@ -122,18 +122,22 @@ public class PedidoRestController {
     }
     @PostMapping("/registrar")
     public ResponseEntity<?> save(@RequestBody Pedido pedido){
+        RespuestaPedido respuestaPedido = new RespuestaPedido();
+        respuestaPedido.setMensaje("Error al registrar pedido");
         try{
-            System.out.println(pedido.getFecha());
+            //System.out.println(pedido.getFecha());
             Pedido pedidoSave = pedidoBusiness.save(pedido);
-            return new ResponseEntity<>(pedidoSave,HttpStatus.CREATED);
+            respuestaPedido.setMensaje("Pedido registrado de manera exitosa");
+            respuestaPedido.setPedidos(pedidoSave);
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.CREATED);
             /*EntityModel<Pedido> entityModel = assemblerPedido.toModel(pedidoBusiness.save(pedido));
             return ResponseEntity
                     .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                     .body(entityModel);*/
         }catch (BusinessException e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.INTERNAL_SERVER_ERROR);
         }catch (NotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.NOT_FOUND);
         }
     }
     /*
