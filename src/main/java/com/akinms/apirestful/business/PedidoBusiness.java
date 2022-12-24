@@ -46,6 +46,35 @@ public class PedidoBusiness implements IPedidoBusiness{
     }
 
     @Override
+    public Pedido getDetallePedidoCliente(Long id_cliente, Long id_pedido) throws BusinessException, NotFoundException {
+        Optional<Cliente> cli;
+        Optional<Pedido> ped;
+        try{
+            cli = clienteRepository.findById(id_cliente);
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+        if(!cli.isPresent()){
+            throw new NotFoundException("No se encontro el cliente con el id "+id_cliente);
+        }else{
+            try{
+                ped = pedidoRepository.findById(id_pedido);
+            } catch (Exception e) {
+                throw new BusinessException(e.getMessage());
+            }
+            if(!ped.isPresent()){
+                throw new NotFoundException("No se encontro el pedido con el id "+id_pedido);
+            }else{
+                try{
+                    return pedidoRepository.getDetallePedidoCliente(id_cliente,id_pedido);
+                }catch (Exception e){
+                    throw new BusinessException(e.getMessage());
+                }
+            }
+        }
+    }
+
+    @Override
     public List<Pedido> getPedidosBodega(Long id) throws BusinessException, NotFoundException {
         Optional<Bodega> bo;
         try{

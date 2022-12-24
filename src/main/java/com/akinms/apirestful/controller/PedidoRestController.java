@@ -140,6 +140,54 @@ public class PedidoRestController {
             return new ResponseEntity<>(respuestaPedido,HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/consultar/cliente/{id_cliente}/pedido/{id_pedido}")
+    public ResponseEntity<RespuestaPedido> detallePedidoCliente(@PathVariable Long id_cliente, @PathVariable Long id_pedido) {
+        RespuestaPedido respuestaPedido = new RespuestaPedido();
+        try{
+            Pedido pedidoCliente = pedidoBusiness.getDetallePedidoCliente(id_cliente,id_pedido);
+            Pedidos pedidoClienteResponse = new Pedidos();
+
+            List<DetallePedidos> detallesResponse = new ArrayList<>();
+            pedidoClienteResponse.setIdpedido(pedidoCliente.getIdpedido());
+            for (DetallePedido dt : pedidoCliente.getDetallesPedido()) {
+                System.out.println("CANTIDAD DE PRODUCTOS DETALLE: "+pedidoCliente.getDetallesPedido().size());
+                DetallePedidos det = new DetallePedidos();
+                det.setPedido("00");
+                det.setCantidad(dt.getCantidad());
+                det.setProducto(dt.getProducto());
+                detallesResponse.add(det);
+            }
+
+            pedidoClienteResponse.setDetallesPedido(detallesResponse);
+            pedidoClienteResponse.setEstado(pedidoCliente.getEstado());
+            pedidoClienteResponse.setFecha(pedidoCliente.getFecha().toString().substring(0,10));
+            pedidoClienteResponse.setMetodo_pago(pedidoCliente.getMetodo_pago());
+            pedidoClienteResponse.setMonto_total(pedidoCliente.getMonto_total());
+            pedidoClienteResponse.setTipo_entrega(pedidoCliente.getTipo_entrega());
+                BodegaUbicacion bu = new BodegaUbicacion();
+                bu.setNombre(pedidoCliente.getBodega().getNombre());
+                bu.setIdbodega(pedidoCliente.getBodega().getIdbodega());
+                bu.setLongitud(pedidoCliente.getBodega().getUbicacion().getLongitud());
+                bu.setLatitud(pedidoCliente.getBodega().getUbicacion().getLatitud());
+                bu.setDireccion(pedidoCliente.getBodega().getUbicacion().getNombre());
+            pedidoClienteResponse.setBodega(bu);
+
+            respuestaPedido.setMensaje("Pedido obtenido con id: "+id_pedido);
+            respuestaPedido.setPedidos(pedidoClienteResponse);
+
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.OK);
+
+        }catch (BusinessException e){
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (NotFoundException e){
+            return new ResponseEntity<>(respuestaPedido,HttpStatus.NOT_FOUND);
+        }catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     /*
     @GetMapping("/")
     public ResponseEntity<CollectionModel<EntityModel<Pedido>>> listAll() {

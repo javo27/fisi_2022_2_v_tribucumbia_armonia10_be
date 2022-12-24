@@ -17,6 +17,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
     @Query(value = "{call pedidosCliente(:id_cliente)};", nativeQuery = true)
     List<Pedido> getPedidosCliente(@Param("id_cliente") Long id_cliente);
 
+    @Query(value = "{call detallePedidoCliente(:id_cliente,:id_pedido)};", nativeQuery = true)
+    Pedido getDetallePedidoCliente(@Param("id_cliente") Long id_cliente, @Param("id_pedido") Long id_pedido);
+
     @Query(value = "{call pedidosBodega(:id_bodega)};", nativeQuery = true)
     List<Pedido> getPedidosBodega(@Param("id_bodega") Long id_bodega);
 
