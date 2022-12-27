@@ -64,6 +64,31 @@ public class BodegaRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/listarbodegas/premium")
+    public ResponseEntity<RespuestaBodegas> listAllPremium() {
+        RespuestaBodegas rp = new RespuestaBodegas();
+        try{
+            List<Bodega> bodegas = bodegaBusiness.listAllBodegasPremium();
+            List<BodegaUbicacion> bodegasRespuesta = new ArrayList<>();
+            for(Bodega bo: bodegas){
+                BodegaUbicacion bu = new BodegaUbicacion();
+                bu.setIdbodega(bo.getIdbodega());
+                bu.setNombre(bo.getNombre());
+                bu.setDireccion(bo.getUbicacion().getNombre());
+                bu.setLatitud(bo.getUbicacion().getLatitud());
+                bu.setLongitud(bo.getUbicacion().getLongitud());
+                bodegasRespuesta.add(bu);
+            }
+            if(bodegasRespuesta.size()>0)
+                rp.setMensaje("Total de bodegas: "+bodegasRespuesta.size());
+            else
+                rp.setMensaje("Sin bodegas disponibles");
+            rp.setBodegas(bodegasRespuesta);
+            return new ResponseEntity<>(rp, HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/detalles/{id}")
     public ResponseEntity<RespuestaBodegas> show(@PathVariable Long id){

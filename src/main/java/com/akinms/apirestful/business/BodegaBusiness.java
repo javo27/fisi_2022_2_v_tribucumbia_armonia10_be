@@ -148,4 +148,13 @@ public class BodegaBusiness implements IBodegaBusiness{
         }
     }
 
+    @Override
+    public List<Bodega> listAllBodegasPremium() throws BusinessException {
+        try{
+            return bodegaRepository.getBodegasPremium();
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+    }
+
 }

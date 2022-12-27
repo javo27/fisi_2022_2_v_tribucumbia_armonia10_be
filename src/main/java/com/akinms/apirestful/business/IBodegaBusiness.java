@@ -17,4 +17,6 @@ public interface IBodegaBusiness {
     */
     Bodega show(Long id) throws BusinessException, NotFoundException;
     List<Bodega> listAllBodegas() throws BusinessException;
+    List<Bodega> listAllBodegasPremium() throws BusinessException;
+
 }

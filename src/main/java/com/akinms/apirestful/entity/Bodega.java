@@ -13,6 +13,7 @@ import java.util.Set;
 @Table(name = "bodega")
 public class Bodega implements Serializable {
     private String nombre;
+    private String premium;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idubicacion")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -33,9 +34,10 @@ public class Bodega implements Serializable {
     public Bodega() {
     }
 
-    public Bodega(String nombre, Long idbodega) {
+    public Bodega(String nombre, Long idbodega, String premium) {
         this.nombre = nombre;
         this.idbodega = idbodega;
+        this.premium = premium;
     }
 
     public String getNombre() {
@@ -58,9 +60,19 @@ public class Bodega implements Serializable {
         return idbodega;
     }
 
+
     public void setIdbodega(Long idbodega) {
         this.idbodega = idbodega;
     }
+
+    public String getPremium() {
+        return premium;
+    }
+
+    public void setPremium(String premium) {
+        this.premium = premium;
+    }
+
     @JsonManagedReference(value = "bodega")
     public Set<Pedido> getPedidos() {
         return pedidos;

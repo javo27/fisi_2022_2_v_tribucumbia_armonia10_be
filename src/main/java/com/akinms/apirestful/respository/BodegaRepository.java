@@ -15,5 +15,6 @@ public interface BodegaRepository extends JpaRepository<Bodega, Long> {
     @Query(value = "{call listarBodegas()};", nativeQuery = true)
     List<Bodega> getBodegas();
 
-
+    @Query(value = "{call listarBodegasPremium()};", nativeQuery = true)
+    List<Bodega> getBodegasPremium();
 }
