@@ -56,6 +56,19 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }*/
+    @PostMapping("/registrar")
+    public ResponseEntity<RespuestaProductos> saveProduct(@RequestBody Producto producto){
+        RespuestaProductos respuesta = new RespuestaProductos();
+        respuesta.setMensaje("Error al guardar producto");
+        try{
+            Producto productoGuardado = productoBusiness.saveProduct(producto);
+            respuesta.setMensaje("Producto guardado de manera exitosa");
+            respuesta.setProductos(productoGuardado);
+            return new ResponseEntity<>(respuesta,HttpStatus.CREATED);
+        }catch (BusinessException e){
+            return new ResponseEntity<>(respuesta,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping("/detalles/{id}")
     public ResponseEntity<RespuestaProductos> showProduct(@PathVariable Long id){
         //public ResponseEntity<Producto> showProduct(@PathVariable Long id){

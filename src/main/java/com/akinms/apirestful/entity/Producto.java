@@ -37,7 +37,7 @@ public class Producto implements Serializable {
     @JoinColumn(name = "idproducto")
     private Set<DetallePedido> detallePedido;*/
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idproducto;
 
     public Producto(String nombre, String descripcion, Double precio, Double descuento, int stock, String img, int idCategoria) {

@@ -109,6 +109,32 @@ public class ProductoBusiness implements IProductoBusiness{
     }
 */
     @Override
+    public Producto saveProduct(Producto producto) throws BusinessException{
+        try{
+            Optional<Categoria> cat;
+            Optional<Bodega> bod;
+            if(producto.categoria!=null){
+                cat = categoriaRepository.findById(producto.getCategoria().getIdcategoria());
+                if(!cat.isPresent()){
+                    throw new NotFoundException("La categoria a la que se quiere registrar un producto no existe");
+                }
+                producto.setCategoria(cat.get());
+                //return productoRepository.save(producto);
+            }
+            if(producto.getBodega()!=null){
+                bod = bodegaRepository.findById(producto.getBodega().getIdbodega());
+                if(!bod.isPresent()){
+                    throw new NotFoundException("La bodega a la que se quiere registrar un producto no existe");
+                }
+                producto.setBodega(bod.get());
+            }
+            return productoRepository.save(producto);
+
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+    }
+    @Override
     public Producto showProduct(Long id) throws BusinessException, NotFoundException {
         Optional<Producto> op;
         try{

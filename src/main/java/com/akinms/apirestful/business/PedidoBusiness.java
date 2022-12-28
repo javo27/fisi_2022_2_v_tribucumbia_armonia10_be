@@ -75,6 +75,25 @@ public class PedidoBusiness implements IPedidoBusiness{
     }
 
     @Override
+    public Pedido updateEstadoPedido(String nuevo_estado, Long id_pedido) throws BusinessException, NotFoundException {
+        Optional<Pedido> ped;
+        try{
+            ped = pedidoRepository.findById(id_pedido);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage());
+        }
+        if(!ped.isPresent()){
+            throw new NotFoundException("No se encontro el pedido con el id "+id_pedido);
+        }else{
+            try{
+                return pedidoRepository.updateEstadoPedido(nuevo_estado,id_pedido);
+            }catch (Exception e){
+                throw new BusinessException(e.getMessage());
+            }
+        }
+    }
+
+    @Override
     public List<Pedido> getPedidosBodega(Long id) throws BusinessException, NotFoundException {
         Optional<Bodega> bo;
         try{

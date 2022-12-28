@@ -11,8 +11,9 @@ public interface IProductoBusiness {
     /*List<Producto> listAllProducts() throws BusinessException;
     List<Producto> listAllProductsByName(String nombre) throws BusinessException;
 
-    Producto saveProduct(Producto producto) throws BusinessException;
+
     Producto updateProducto(Long id, Producto producto) throws BusinessException, NotFoundException;*/
+    Producto saveProduct(Producto producto) throws BusinessException;
     Producto showProduct(Long id) throws BusinessException, NotFoundException;
     void removeProduct(Long id) throws BusinessException, NotFoundException;
     List<Producto> listProductsBodega(Long id) throws BusinessException, NotFoundException;

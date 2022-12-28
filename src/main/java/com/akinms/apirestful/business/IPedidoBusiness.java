@@ -16,6 +16,8 @@ public interface IPedidoBusiness {
     void remove(Long id) throws BusinessException, NotFoundException;*/
     List<Pedido> getPedidosCliente(Long id) throws BusinessException, NotFoundException;
     Pedido getDetallePedidoCliente(Long id_cliente, Long id_pedido) throws BusinessException, NotFoundException;
+
+    Pedido updateEstadoPedido(String nuevo_estado, Long id_pedido) throws BusinessException, NotFoundException;
     List<Pedido> getPedidosBodega(Long id) throws BusinessException, NotFoundException;
     List<Pedido> getVentasSemanes(String fecha_inicio, String fecha_fin, Long idBodega) throws BusinessException, NotFoundException;
 }

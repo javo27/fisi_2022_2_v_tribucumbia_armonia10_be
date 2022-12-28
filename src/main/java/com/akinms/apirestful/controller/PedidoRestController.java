@@ -186,6 +186,25 @@ public class PedidoRestController {
             throw new RuntimeException(e);
         }
     }
+    @PutMapping("/actualizarestado/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Pedido pedido){
+        RespuestaMensaje respuesta = new RespuestaMensaje();
+        respuesta.setMensaje("Error al actualizar el estado del pedido");
+        //String respuesta = "Error al actualizar el estado del pedido";
+        //respuesta.setMensaje("Error al actualizar el estado del pedido");
+        try {
+            Pedido pedidoActualizado = pedidoBusiness.updateEstadoPedido(pedido.getEstado(),id);
+            respuesta.setMensaje("Se ha actualizado el estado del pedido de manera exitosa");
+            //respuesta = "Se ha actualizado el estado del pedido de manera exitosa";
+            //respuesta.setPedidos(pedidoActualizado);
+            return new ResponseEntity<>(respuesta,HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(respuesta,HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e){
+            respuesta.setMensaje("No se encontró el id del producto");
+            return new ResponseEntity<>(respuesta,HttpStatus.NOT_FOUND);
+        }
+    }
 
 
     /*
