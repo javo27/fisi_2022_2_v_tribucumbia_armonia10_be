@@ -19,16 +19,6 @@ public class BodegueroBusiness implements IBodegueroBusiness{
     private BodegueroRepository bodegueroRepository;
     @Autowired
     private BodegaRepository bodegaRepository;
-
-    @Override
-    public List<Bodeguero> listAll() throws BusinessException {
-        try{
-            return bodegueroRepository.findAll();
-        } catch (Exception e){
-            throw new BusinessException(e.getMessage());
-        }
-    }
-
     @Override
     public Bodeguero show(Long id) throws BusinessException, NotFoundException {
         Optional<Bodeguero> op;
@@ -42,6 +32,26 @@ public class BodegueroBusiness implements IBodegueroBusiness{
         }
         return op.get();
     }
+
+    @Override
+    public Bodeguero buscarBodeguero(String correo, String pass) throws BusinessException, NotFoundException {
+        try{
+            return bodegueroRepository.buscarBodeguero(correo,pass);
+        }catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+    }
+/*
+    @Override
+    public List<Bodeguero> listAll() throws BusinessException {
+        try{
+            return bodegueroRepository.findAll();
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+    }
+
+
 
     @Override
     public Bodeguero save(Bodeguero bodeguero) throws BusinessException {
@@ -124,5 +134,5 @@ public class BodegueroBusiness implements IBodegueroBusiness{
                 throw new BusinessException(e.getMessage());
             }
         }
-    }
+    }*/
 }

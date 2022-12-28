@@ -18,6 +18,28 @@ public class ClienteBusiness implements IClienteBusiness{
     private ClienteRepository clienteRepository;
 
     @Override
+    public Cliente buscarCliente(String correo, String pass) throws BusinessException, NotFoundException {
+        try{
+            return clienteRepository.buscarCliente(correo,pass);
+        }catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+    }
+    @Override
+    public Cliente show(Long id) throws BusinessException, NotFoundException {
+        Optional<Cliente> op;
+        try{
+            op = clienteRepository.findById(id);
+        } catch (Exception e){
+            throw new BusinessException(e.getMessage());
+        }
+        if(!op.isPresent()){
+            throw new NotFoundException("No se encontro el cliente con el id "+id);
+        }
+        return op.get();
+    }
+    /*
+    @Override
     public List<Cliente> listAll() throws BusinessException {
         try{
             return clienteRepository.findAll();
@@ -100,5 +122,6 @@ public class ClienteBusiness implements IClienteBusiness{
                 throw new BusinessException(e.getMessage());
             }
         }
-    }
+    }*/
+
 }

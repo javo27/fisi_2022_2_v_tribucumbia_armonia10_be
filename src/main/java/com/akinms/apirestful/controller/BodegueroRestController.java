@@ -2,8 +2,13 @@ package com.akinms.apirestful.controller;
 
 import com.akinms.apirestful.business.IBodegueroBusiness;
 import com.akinms.apirestful.entity.Bodeguero;
+import com.akinms.apirestful.entity.Cliente;
 import com.akinms.apirestful.exception.BusinessException;
 import com.akinms.apirestful.exception.NotFoundException;
+import com.akinms.apirestful.responseentity.BodegueroEncontrado;
+import com.akinms.apirestful.responseentity.ClienteEncontrado;
+import com.akinms.apirestful.responseentity.RespuestaBodeguero;
+import com.akinms.apirestful.responseentity.RespuestaCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -19,10 +24,60 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/v1/bodegueros")
+@RequestMapping("/api/core2/v1/bodegueros")
 public class BodegueroRestController {
     @Autowired
     private IBodegueroBusiness bodegueroBusiness;
+
+    @GetMapping("/buscarbodeguero")
+    public ResponseEntity<RespuestaBodeguero> buscarCliente(/*@RequestBody Cliente cliente*/@RequestParam String correo, @RequestParam String pass) {
+        //public ResponseEntity<List<Categoria>> listAll(){
+        RespuestaBodeguero respuesta = new RespuestaBodeguero();
+        respuesta.setMensaje("Error al buscar bodeguero, revise correo y contraseña");
+        try{
+            Bodeguero bodegueroEncontrado = bodegueroBusiness.buscarBodeguero(correo,pass);
+            if(bodegueroEncontrado!=null){
+                respuesta.setMensaje("Bodeguero Encontrado");
+                BodegueroEncontrado cli = new BodegueroEncontrado();
+                cli.setIdbodeguero(bodegueroEncontrado.getIdbodeguero());
+                cli.setApellidos(bodegueroEncontrado.getApellidos());
+                cli.setNombres(bodegueroEncontrado.getNombres());
+                cli.setTelefono(bodegueroEncontrado.getTelefono());
+                cli.setCorreo(bodegueroEncontrado.getCorreo());
+                cli.setIdbodega(bodegueroEncontrado.getBodega().getIdbodega());
+                cli.setContraseña("");
+                respuesta.setBodeguero(cli);
+            }
+            return new ResponseEntity<>(respuesta, HttpStatus.OK);
+        } catch (BusinessException | NotFoundException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<RespuestaBodeguero> show(@PathVariable Long id){
+        //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
+        RespuestaBodeguero respuesta = new RespuestaBodeguero();
+        respuesta.setMensaje("Error al obtener bodeguero");
+        try{
+            Bodeguero bodeguero = bodegueroBusiness.show(id);
+            BodegueroEncontrado cli = new BodegueroEncontrado();
+            cli.setIdbodeguero(bodeguero.getIdbodeguero());
+            cli.setApellidos(bodeguero.getApellidos());
+            cli.setNombres(bodeguero.getNombres());
+            cli.setTelefono(bodeguero.getTelefono());
+            cli.setCorreo(bodeguero.getCorreo());
+            cli.setIdbodega(bodeguero.getBodega().getIdbodega());
+            cli.setContraseña("");
+            respuesta.setBodeguero(cli);
+            respuesta.setMensaje("Bodeguero encontrado con id: "+id);
+            return new ResponseEntity<>(respuesta,
+                    HttpStatus.OK);
+        } catch (BusinessException e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 /*
     @GetMapping("/")

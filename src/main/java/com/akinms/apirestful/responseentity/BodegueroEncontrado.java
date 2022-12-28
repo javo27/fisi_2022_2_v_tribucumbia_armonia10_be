@@ -1,35 +1,25 @@
-package com.akinms.apirestful.entity;
+package com.akinms.apirestful.responseentity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import javax.persistence.*;
-import java.io.Serializable;
-
-@Entity
-@Table(name = "bodeguero")
-public class Bodeguero  implements Serializable {
+public class BodegueroEncontrado {
     private String nombres;
     private String apellidos;
     private String telefono;
     private String correo;
     private String contraseña;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idbodeguero;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idbodega")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    private Bodega bodega;
+    private Long idbodega;
 
-    public Bodeguero() {
+    public BodegueroEncontrado() {
     }
 
-    public Bodeguero(String nombres, String apellidos, String telefono, Long idbodeguero) {
+    public BodegueroEncontrado(String nombres, String apellidos, String telefono, String correo, String contraseña, Long idbodeguero, Long idbodega) {
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.telefono = telefono;
+        this.correo = correo;
+        this.contraseña = contraseña;
         this.idbodeguero = idbodeguero;
+        this.idbodega = idbodega;
     }
 
     public String getNombres() {
@@ -56,22 +46,6 @@ public class Bodeguero  implements Serializable {
         this.telefono = telefono;
     }
 
-    public Long getIdbodeguero() {
-        return idbodeguero;
-    }
-
-    public void setIdbodeguero(Long idbodeguero) {
-        this.idbodeguero = idbodeguero;
-    }
-
-    public Bodega getBodega() {
-        return bodega;
-    }
-
-    public void setBodega(Bodega bodega) {
-        this.bodega = bodega;
-    }
-
     public String getCorreo() {
         return correo;
     }
@@ -86,5 +60,21 @@ public class Bodeguero  implements Serializable {
 
     public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
+    }
+
+    public Long getIdbodeguero() {
+        return idbodeguero;
+    }
+
+    public void setIdbodeguero(Long idbodeguero) {
+        this.idbodeguero = idbodeguero;
+    }
+
+    public Long getIdbodega() {
+        return idbodega;
+    }
+
+    public void setIdbodega(Long idbodega) {
+        this.idbodega = idbodega;
     }
 }

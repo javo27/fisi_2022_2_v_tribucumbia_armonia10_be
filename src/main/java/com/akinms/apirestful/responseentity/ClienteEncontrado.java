@@ -1,38 +1,23 @@
-package com.akinms.apirestful.entity;
+package com.akinms.apirestful.responseentity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-@Entity
-@Table(name = "clientes")
-public class Cliente implements Serializable {
+public class ClienteEncontrado {
     private String nombres;
     private String apellidos;
     private String direccion;
     private String telefono;
     private String correo;
     private String contraseña;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idcliente;
 
-    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    //@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
-    @JsonIgnore
-    public Set<Pedido> pedidos = new HashSet<>();
-    public Cliente() {
+    public ClienteEncontrado() {
     }
 
-    public Cliente(String nombre, String apellidos, String direccion, String telefono, Long idcliente) {
-        this.nombres = nombre;
+    public ClienteEncontrado(String nombres, String apellidos, String direccion, String telefono, String correo, Long idcliente) {
+        this.nombres = nombres;
         this.apellidos = apellidos;
         this.direccion = direccion;
         this.telefono = telefono;
+        this.correo = correo;
         this.idcliente = idcliente;
     }
 
@@ -68,31 +53,20 @@ public class Cliente implements Serializable {
         this.telefono = telefono;
     }
 
-    public Long getIdcliente() {
-        return idcliente;
-    }
-
-    public void setIdcliente(Long idcliente) {
-        this.idcliente = idcliente;
-    }
-    @JsonManagedReference(value = "cliente")
-    public Set<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        for (Pedido pedido: pedidos){
-            pedido.setCliente(this);
-        }
-    }
-
     public String getCorreo() {
         return correo;
     }
 
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    public Long getIdcliente() {
+        return idcliente;
+    }
+
+    public void setIdcliente(Long idcliente) {
+        this.idcliente = idcliente;
     }
 
     public String getContraseña() {
