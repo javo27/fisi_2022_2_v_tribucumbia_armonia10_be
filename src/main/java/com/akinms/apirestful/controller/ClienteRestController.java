@@ -26,7 +26,7 @@ public class ClienteRestController {
     @Autowired
     private IClienteBusiness clienteBusiness;
 
-    @GetMapping("/buscarcliente")
+    @PostMapping("/buscarcliente")
     public ResponseEntity<RespuestaCliente> buscarCliente(/*@RequestBody Cliente cliente*/@RequestParam String correo, @RequestParam String pass) {
         //public ResponseEntity<List<Categoria>> listAll(){
         RespuestaCliente respuesta = new RespuestaCliente();
@@ -42,6 +42,17 @@ public class ClienteRestController {
                 cli.setTelefono(clienteEncontrado.getTelefono());
                 cli.setDireccion(clienteEncontrado.getDireccion());
                 cli.setCorreo(clienteEncontrado.getCorreo());
+                cli.setContraseña("");
+                respuesta.setCliente(cli);
+            }else{
+                respuesta.setMensaje("Cliente No Encontrado");
+                ClienteEncontrado cli = new ClienteEncontrado();
+                cli.setIdcliente(-1L);
+                cli.setApellidos("");
+                cli.setNombres("");
+                cli.setTelefono("");
+                cli.setDireccion("");
+                cli.setCorreo("");
                 cli.setContraseña("");
                 respuesta.setCliente(cli);
             }
