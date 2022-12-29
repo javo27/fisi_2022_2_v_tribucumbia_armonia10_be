@@ -61,7 +61,7 @@ public class ClienteRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/{id}")
+    @GetMapping("/consultar/{id}")
     public ResponseEntity<RespuestaCliente> show(@PathVariable Long id){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaCliente respuesta = new RespuestaCliente();

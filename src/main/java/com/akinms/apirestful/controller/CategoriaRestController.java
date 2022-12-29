@@ -28,7 +28,7 @@ public class CategoriaRestController {
     @Autowired
     private ICategoriaBusiness categoriaBusiness;
 
-    @GetMapping("/bodega/{id}")
+    @GetMapping("/listar/bodega/{id}")
     public ResponseEntity<RespuestaCategoria> listCategoriesBodega(@PathVariable Long id){
         RespuestaCategoria respuesta = new RespuestaCategoria();
         try{

@@ -90,7 +90,7 @@ public class BodegaRestController {
         }
     }
 
-    @GetMapping("/detalles/{id}")
+    @GetMapping("/consultar/{id}")
     public ResponseEntity<RespuestaBodegas> show(@PathVariable Long id){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaBodegas rp = new RespuestaBodegas();

@@ -24,7 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/api/core2/v1/bodegueros")
+@RequestMapping("/api/gestioninventario/v1/bodegueros")
 public class BodegueroRestController {
     @Autowired
     private IBodegueroBusiness bodegueroBusiness;
@@ -53,7 +53,7 @@ public class BodegueroRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/{id}")
+    @GetMapping("/consultar/{id}")
     public ResponseEntity<RespuestaBodeguero> show(@PathVariable Long id){
         //public ResponseEntity<Categoria> showCategory(@PathVariable Long id){
         RespuestaBodeguero respuesta = new RespuestaBodeguero();

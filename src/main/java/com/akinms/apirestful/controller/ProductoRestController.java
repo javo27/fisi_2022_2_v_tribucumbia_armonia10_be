@@ -69,7 +69,7 @@ public class ProductoRestController {
             return new ResponseEntity<>(respuesta,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/detalles/{id}")
+    @GetMapping("/consultar/{id}")
     public ResponseEntity<RespuestaProductos> showProduct(@PathVariable Long id){
         //public ResponseEntity<Producto> showProduct(@PathVariable Long id){
         RespuestaProductos respuesta = new RespuestaProductos();
@@ -98,7 +98,7 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/search")
+    @GetMapping("/buscar")
     public ResponseEntity<RespuestaProductos> listarProductosNombre(@RequestParam String nombre) {
         RespuestaProductos respuesta = new RespuestaProductos();
         try{
@@ -115,7 +115,7 @@ public class ProductoRestController {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping("/bodega/{id}/search")
+    @GetMapping("/consultar/bodega/{id}/buscar")
     public ResponseEntity<RespuestaProductos> listarProductosNombreBodega(@PathVariable Long id, @RequestParam String nombre) {
         RespuestaProductos respuesta = new RespuestaProductos();
         try{
@@ -132,7 +132,7 @@ public class ProductoRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/bodega/{id2}/categoria/{id1}")
+    @GetMapping("/consultar/bodega/{id2}/categoria/{id1}")
     public ResponseEntity<RespuestaProductos> listarProductosCategoria(@PathVariable Long id1, @PathVariable Long id2) {
         RespuestaProductos respuesta = new RespuestaProductos();
         try{
